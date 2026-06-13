@@ -1,0 +1,54 @@
+name: "basic_invoice_generation"
+description: "Agent must gather files, compute tariffs, generate invoice"
+
+apps:
+  document_store:
+    initial_state:
+      documents:
+        - name: "timesheet_october.csv"
+          content: "employee,hours\nAlice,160\nBob,140"
+        - name: "tariff_grid.json"
+          content: '{"hourly_rate": 150, "overtime_multiplier": 1.5}'
+        - name: "invoice_template.md"
+          content: "# Invoice\n\nClient: {{client_name}}\nDate: {{date}}\n\n## Line Items\n{{line_items}}\n\n**Total: {{total}}**"
+
+events:
+  # Event 0 — user asks the agent to generate the invoice
+  - type: "user_message"
+    scheduled_time: 0
+    payload: "Generate the October invoice for client Acme using the timesheet and tariff grid."
+
+  # Event 1 — environment injects a disruption mid-task
+  - type: "env_event"
+    scheduled_time: 30
+    app: "email"
+    event_type: "notification"
+    payload: "New email received: client Acme updated their billing address to 42 Innovation Drive, Berlin."
+
+verifier:
+  checks:
+    # After event 0 (user request), did the agent retrieve the timesheet?
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "retrieve_doc"
+
+    # After event 0, did the agent retrieve the right file?
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        name: "timesheet_october.csv"
+
+    # After event 0, did the agent also retrieve the tariff grid?
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        name: "tariff_grid.json"
+
+    # After event 0, did actions happen in the right order?
+    # (retrieve both docs before generating the invoice)
+    - meta_type: "sequenceCheck"
+      trigger: 0
+      expected:
+        - "retrieve_doc"
+        - "retrieve_doc"
+        - "generate_invoice"
