@@ -1,0 +1,39 @@
+name: "email_triage_with_update"
+description: "Agent must triage inbox emails and adapt when a new urgent email arrives mid-task"
+
+apps:
+  document_store:
+    initial_state:
+      documents:
+        - name: "inbox_summary.txt"
+          content: "3 unread emails: vendor invoice, team standup notes, client feedback"
+        - name: "priority_rules.json"
+          content: '{"urgent": ["client", "billing"], "normal": ["standup", "newsletter"]}'
+
+events:
+  - type: "user_message"
+    scheduled_time: 0
+    payload: "Triage my inbox and flag any urgent emails based on our priority rules."
+
+  - type: "env_event"
+    scheduled_time: 15
+    app: "email"
+    event_type: "notification"
+    payload: "New urgent email from CEO: Board meeting moved to tomorrow, need updated deck."
+
+verifier:
+  checks:
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "retrieve_doc"
+
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        name: "priority_rules.json"
+
+    - meta_type: "sequenceCheck"
+      trigger: 0
+      expected:
+        - "retrieve_doc"
+        - "retrieve_doc"

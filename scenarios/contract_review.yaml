@@ -1,0 +1,37 @@
+name: "contract_review_compliance"
+description: "Agent must review contract, check compliance against rules, and flag violations"
+
+apps:
+  document_store:
+    initial_state:
+      documents:
+        - name: "contract_acme_2024.pdf"
+          content: "Service Agreement between Acme Corp and ClientCo. Payment terms: Net 60. Liability cap: $500,000."
+        - name: "compliance_rules.json"
+          content: '{"max_payment_terms_days": 30, "min_liability_cap": 1000000}'
+
+events:
+  - type: "user_message"
+    scheduled_time: 0
+    payload: "Review the Acme contract against our compliance rules and flag any violations."
+
+verifier:
+  checks:
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "retrieve_doc"
+
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        name: "contract_acme_2024.pdf"
+
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        name: "compliance_rules.json"
+
+    # This will FAIL with mock agent — demonstrates mixed results
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "flag_violation"

@@ -1,0 +1,123 @@
+{
+  "suite": "scenarios",
+  "results": [
+    {
+      "id": "contract_review",
+      "name": "contract_review_compliance",
+      "description": "Agent must review contract, check compliance against rules, and flag violations",
+      "duration": 9.479,
+      "passed": false,
+      "score": 0.75,
+      "checks": [
+        {
+          "id": "9af48b1f-e4fd-454e-95df-32a5f1c78ab4",
+          "name": "toolCheck after event 0",
+          "meta_type": "tool",
+          "passed": true,
+          "expected": "retrieve_doc",
+          "actual": "['list_doc', 'retrieve_doc', 'retrieve_doc']"
+        },
+        {
+          "id": "da617b9e-bcf7-4350-8605-8f382d73de0a",
+          "name": "argCheck after event 0",
+          "meta_type": "arg",
+          "passed": true,
+          "expected": "{'name': 'contract_acme_2024.pdf'}",
+          "actual": "[{}, {'name': 'contract_acme_2024.pdf'}, {'name': 'compliance_rules.json'}]"
+        },
+        {
+          "id": "50316457-457d-43e6-854c-0ad8f495d854",
+          "name": "argCheck after event 0",
+          "meta_type": "arg",
+          "passed": true,
+          "expected": "{'name': 'compliance_rules.json'}",
+          "actual": "[{}, {'name': 'contract_acme_2024.pdf'}, {'name': 'compliance_rules.json'}]"
+        },
+        {
+          "id": "e9d9933e-ff3f-4143-948e-7b370626e3af",
+          "name": "toolCheck after event 0",
+          "meta_type": "tool",
+          "passed": false,
+          "expected": "flag_violation",
+          "actual": "['list_doc', 'retrieve_doc', 'retrieve_doc']"
+        }
+      ]
+    },
+    {
+      "id": "email_triage",
+      "name": "email_triage_with_update",
+      "description": "Agent must triage inbox emails and adapt when a new urgent email arrives mid-task",
+      "duration": 5.107,
+      "passed": true,
+      "score": 1.0,
+      "checks": [
+        {
+          "id": "879ac835-1991-4833-aaae-b8321cefd5e3",
+          "name": "toolCheck after event 0",
+          "meta_type": "tool",
+          "passed": true,
+          "expected": "retrieve_doc",
+          "actual": "['list_doc', 'retrieve_doc', 'retrieve_doc']"
+        },
+        {
+          "id": "163bb362-f4b4-4f5f-a63f-4917ca0caf33",
+          "name": "argCheck after event 0",
+          "meta_type": "arg",
+          "passed": true,
+          "expected": "{'name': 'priority_rules.json'}",
+          "actual": "[{}, {'name': 'inbox_summary.txt'}, {'name': 'priority_rules.json'}]"
+        },
+        {
+          "id": "c22bd180-9b02-4606-9b37-75e8ff4a9f20",
+          "name": "sequenceCheck after event 0",
+          "meta_type": "sequence",
+          "passed": true,
+          "expected": "['retrieve_doc', 'retrieve_doc']",
+          "actual": "['list_doc', 'retrieve_doc', 'retrieve_doc']"
+        }
+      ]
+    },
+    {
+      "id": "invoice_generation",
+      "name": "basic_invoice_generation",
+      "description": "Agent must gather files, compute tariffs, generate invoice",
+      "duration": 11.091,
+      "passed": true,
+      "score": 1.0,
+      "checks": [
+        {
+          "id": "888ca54f-d504-4e69-8dc3-be6a7b12f6cf",
+          "name": "toolCheck after event 0",
+          "meta_type": "tool",
+          "passed": true,
+          "expected": "retrieve_doc",
+          "actual": "['list_doc', 'retrieve_doc', 'retrieve_doc', 'retrieve_doc', 'generate_invoice']"
+        },
+        {
+          "id": "90a0a7e3-fd48-49a4-8e05-09ebd3542d49",
+          "name": "argCheck after event 0",
+          "meta_type": "arg",
+          "passed": true,
+          "expected": "{'name': 'timesheet_october.csv'}",
+          "actual": "[{}, {'name': 'timesheet_october.csv'}, {'name': 'tariff_grid.json'}, {'name': 'invoice_template.md'}, {'content': '# Invoice\\n\\nClient: Acme\\nDate: October 2023\\n\\n## Line Items\\n- Alice: $24,000\\n- Bob: $21,000\\n\\n**Total: $45,000**'}]"
+        },
+        {
+          "id": "2f98b8bd-3b02-4927-bba1-2ccc4c97e6c7",
+          "name": "argCheck after event 0",
+          "meta_type": "arg",
+          "passed": true,
+          "expected": "{'name': 'tariff_grid.json'}",
+          "actual": "[{}, {'name': 'timesheet_october.csv'}, {'name': 'tariff_grid.json'}, {'name': 'invoice_template.md'}, {'content': '# Invoice\\n\\nClient: Acme\\nDate: October 2023\\n\\n## Line Items\\n- Alice: $24,000\\n- Bob: $21,000\\n\\n**Total: $45,000**'}]"
+        },
+        {
+          "id": "e739da80-3033-4969-858b-7fea2c1f28f8",
+          "name": "sequenceCheck after event 0",
+          "meta_type": "sequence",
+          "passed": true,
+          "expected": "['retrieve_doc', 'retrieve_doc', 'generate_invoice']",
+          "actual": "['list_doc', 'retrieve_doc', 'retrieve_doc', 'retrieve_doc', 'generate_invoice']"
+        }
+      ]
+    }
+  ]
+}

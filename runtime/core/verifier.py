@@ -2,9 +2,6 @@ from runtime.core.config import MetaType, VerifierConfig
 from runtime.core.event import Event, AgentEvent, EventLog
 from typing import List
 
-# I have to handle each case, let's start by correct_files_retrieved
-# check events with read
-
 class Check:
     def __init__(self, type:MetaType, trigger:int, expected):
         self.type = type
@@ -24,7 +21,9 @@ class Check:
                 return CheckResult(
                     name=f"toolCheck after event {self.trigger}",
                     passed=found,
-                    detail=f"Expected tool '{self.expected}', found: {[e.tool for e in agent_events]}"
+                    meta_type="tool",
+                    expected=f"{self.expected}",
+                    actual=f"{[e.tool for e in agent_events]}"
                 )
             case MetaType.arg:
                 found = any(
@@ -34,14 +33,18 @@ class Check:
                 return CheckResult(
                     name=f"argCheck after event {self.trigger}",
                     passed=found,
-                    detail=f"Expected args {self.expected}, found: {[e.args for e in agent_events]}"
+                    meta_type="arg",
+                    expected=f"{self.expected}",
+                    actual=f"{[e.args for e in agent_events]}"
                 )
             case MetaType.result:
                 found = any(e.result == self.expected for e in agent_events)
                 return CheckResult(
                     name=f"resultCheck after event {self.trigger}",
                     passed=found,
-                    detail=f"Expected result {self.expected}, found: {[e.result for e in agent_events]}"
+                    meta_type="result",
+                    expected=f"{self.expected}",
+                    actual=f"{[e.result for e in agent_events]}"
                 )
             case MetaType.sequence:
                 tools_called = [e.tool for e in agent_events]
@@ -52,11 +55,12 @@ class Check:
                 return CheckResult(
                     name=f"sequenceCheck after event {self.trigger}",
                     passed=found,
-                    detail=f"Expected order {self.expected}, found: {[e.tool for e in agent_events]}"
+                    meta_type="sequence",
+                    expected=f"{self.expected}",
+                    actual=f"{[e.tool for e in agent_events]}"
                 ) 
-
             case MetaType.content:
-                return CheckResult(name=f"contentCheck after event {self.trigger}", passed=True, detail="soft check not implemented")
+                return CheckResult(name=f"contentCheck after event {self.trigger}", passed=True, meta_type="content", expected="soft check not implemented", actual="")
 
 class Verifier:
     def __init__(self, checks):
@@ -68,19 +72,18 @@ class Verifier:
         results = [check.verify(event_list) for check in self.checks]
         return VerificationResult(results)
 
-
-
-
 class CheckResult:
-    def __init__(self, name, passed, detail=""):
+    def __init__(self, name, passed, meta_type, expected, actual):
         self.name = name
         self.passed = passed      # bool
-        self.detail = detail      # failure explanation
+        self.meta_type = meta_type
+        self.expected = expected
+        self.actual = actual
     
     def __repr__(self):
         if self.passed:
             return f"✅ : {self.name}"
-        return f"❌ : {self.name}\n{self.detail}"
+        return f"❌ : {self.name}\n{self.actual}\n{self.expected}"
         
 
 class VerificationResult:

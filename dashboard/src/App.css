@@ -1,0 +1,424 @@
+/* ─── Reset & base ────────────────────────────────── */
+
+:root {
+  --text: #4a5568;
+  --text-h: #1a202c;
+  --bg: #f0f7ff;
+  --border: #c9ddf0;
+  --code-bg: #e8f1fb;
+  --accent: #2b7de9;
+  --accent-bg: rgba(43, 125, 233, 0.08);
+  --accent-border: rgba(43, 125, 233, 0.4);
+  --social-bg: rgba(232, 241, 251, 0.5);
+  --shadow:
+    rgba(43, 125, 233, 0.08) 0 10px 15px -3px, rgba(43, 125, 233, 0.04) 0 4px 6px -2px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: "SF Mono", "Fira Code", monospace;
+
+  /* surfaces */
+  --surface-0: #e4eff9;
+  --surface-1: #ffffff;
+  --surface-2: #f5f9ff;
+
+  /* text */
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #94a3b8;
+
+  /* borders */
+  --border: #c9ddf0;
+
+  /* semantic */
+  --text-success: #16a34a;
+  --text-danger: #dc2626;
+  --text-warning: #ca8a04;
+  --text-accent: #2b7de9;
+
+  --fill-success: #22c55e;
+  --fill-warning: #eab308;
+  --fill-danger: #ef4444;
+  --fill-accent: #2b7de9;
+
+  --bg-success: rgba(34, 197, 94, 0.10);
+  --bg-danger: rgba(239, 68, 68, 0.08);
+
+  /* layout */
+  --radius: 8px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+#root {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  color: var(--text-primary);
+  padding: 2rem;
+  width: 100%;
+  font-size: 16px;
+}
+
+.dashboard h1 {
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--text-accent);
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Frames ─────────────────────────────────────── */
+
+.frame {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.frame-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+/* ─── Summary table ──────────────────────────────── */
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+  font-size: 18px;
+}
+
+.summary-table tr {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.summary-table tr:hover {
+  background: var(--surface-2);
+}
+
+.summary-table tr.selected {
+  background: var(--accent-bg);
+  border-left: 2px solid var(--fill-accent);
+}
+
+.summary-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.summary-table td:first-child {
+  color: var(--text-muted);
+  width: 60px;
+  text-align: center;
+}
+
+.summary-table td:last-child {
+  text-align: right;
+  color: var(--text-muted);
+  width: 80px;
+}
+
+/* ─── Status badges ──────────────────────────────── */
+
+.status-pass {
+  color: var(--text-success);
+  font-weight: 500;
+}
+
+.status-fail {
+  color: var(--text-danger);
+  font-weight: 500;
+}
+
+/* ─── Bottom summary grid (type table + score) ──── */
+
+.bottom-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.type-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+
+.type-table th {
+  text-align: left;
+  padding: 6px 8px;
+  color: var(--text-muted);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+
+.type-table td {
+  padding: 6px 8px;
+  color: var(--text-primary);
+}
+
+.type-table td:first-child {
+  color: var(--text-secondary);
+}
+
+.type-table td:last-child {
+  text-align: right;
+  font-weight: 500;
+}
+
+/* ─── Score panel ────────────────────────────────── */
+
+.score-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-panel .metric {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.score-panel .metric.green {
+  color: var(--text-success);
+}
+
+.score-panel .metric.red {
+  color: var(--text-danger);
+}
+
+.score-label {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.score-bar-track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--border);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+.score-bar-fill.green { background: var(--fill-success); }
+.score-bar-fill.yellow { background: var(--fill-warning); }
+.score-bar-fill.red { background: var(--fill-danger); }
+
+.score-value {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* ─── Details frame ──────────────────────────────── */
+
+.details-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ─── Check sidebar ──────────────────────────────── */
+
+.check-group-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-accent);
+  padding: 10px 0 6px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-primary);
+  transition: background 0.12s;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.check-item:hover {
+  background: var(--surface-2);
+}
+
+.check-item.selected {
+  background: var(--accent-bg);
+  border-left: 2px solid var(--fill-accent);
+}
+
+.check-item .check-name {
+  flex: 1;
+}
+
+.check-item .check-status {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* ─── Check detail panel ─────────────────────────── */
+
+.check-detail {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.check-detail h3 {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.check-detail .check-description {
+  font-size: 18px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+
+.result-table th {
+  text-align: left;
+  padding: 8px 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-table td {
+  padding: 8px 12px;
+  color: var(--text-primary);
+}
+
+.result-table td.actual-fail {
+  color: var(--text-danger);
+  font-weight: 600;
+}
+
+.result-table td.actual-pass {
+  color: var(--text-success);
+  font-weight: 600;
+}
+
+/* ─── Empty / null states ────────────────────────── */
+
+.empty-state {
+  font-size: 18px;
+  color: var(--text-muted);
+  padding: 2rem;
+  text-align: center;
+}
