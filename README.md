@@ -81,7 +81,7 @@ Event (base: id, status, timestamp)
 
 ### App system
 
-Apps are Python classes that inherit from `App`. Methods decorated with `@tool(op_type=OpType.WRITE)` or `@tool(op_type=OpType.READ)` are automatically discovered via introspection at instantiation time. The decorator marks the function at class definition time; `App.__init__` scans for marked methods and builds the tool registry.
+Apps are Python classes that inherit from `App`. Methods decorated with `@tool()` are automatically discovered via introspection at instantiation time. The decorator marks the function at class definition time; `App.__init__` scans for marked methods and builds the tool registry.
 
 ```python
 class DocumentStore(App):
@@ -89,14 +89,18 @@ class DocumentStore(App):
         super().__init__()
         self.documents = {}
 
-    @tool(op_type=OpType.WRITE)
-    def add_document(self, name, content):
+    @tool()
+    def add_doc(self, name, content):
+        """
+        Add a new document to the Document Store
+        Arguments:
+        - name: str. Name of the document
+        - content: str. Content of the document
+        Output:
+        - Status message: str
+        """
         self.documents[name] = content
-        return f"Document '{name}' stored."
-
-    @tool(op_type=OpType.READ)
-    def retrieve_doc(self, name):
-        return self.documents.get(name, "Not found.")
+        return f"Document {name} added"
 ```
 
 ---
@@ -327,7 +331,7 @@ This project is in early development. If you're interested in agent evaluation, 
 
 ## License
 
-TBD
+MIT
 
 ---
 
