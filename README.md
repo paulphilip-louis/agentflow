@@ -63,8 +63,8 @@ Each check is anchored to a **trigger** — a scenario event after which the age
 
 **Layer 3 — CI/CD Integration.** A CLI that runs scenarios and produces structured results (terminal output + JSON). Designed to plug into GitHub Actions, GitLab CI, or any pipeline.
 
-A visual:
-[agentflow_architecture](public/agentflow_architecture.svg)
+A visual of the architecture:
+![image](public/agentflow_architecture.svg)
 
 ### Event hierarchy
 
