@@ -1,0 +1,90 @@
+name: "schedule_from_email"
+description: "Agent receives a meeting request via email and must schedule it on the calendar, checking for conflicts and notifying attendees"
+
+apps:
+  email:
+    initial_state:
+      inbox:
+        - id: "em1"
+          from: "julia.martin@partnerfirm.com"
+          subject: "Proposal Review Meeting Request"
+          body: "Hi, could we schedule a meeting on October 16th between 10:00 and 11:30 to review the partnership proposal? I'd like to include Thomas Berg from your side as well. Please confirm. Thanks, Julia"
+          date: "2024-10-13"
+        - id: "em2"
+          from: "spam@offers.com"
+          subject: "Amazing deal just for you!"
+          body: "Click here to claim your prize..."
+          date: "2024-10-13"
+
+  calendar:
+    initial_state:
+      events:
+        - id: "cal1"
+          title: "Team Standup"
+          date: "2024-10-16"
+          start_time: "09:00"
+          end_time: "09:30"
+          attendees: ["Team"]
+          location: "Zoom"
+          description: "Daily standup"
+        - id: "cal2"
+          title: "Dentist Appointment"
+          date: "2024-10-16"
+          start_time: "11:00"
+          end_time: "12:00"
+          attendees: []
+          location: "Dr. Schmidt"
+          description: "Regular checkup"
+
+  contacts:
+    initial_state:
+      contacts:
+        - id: "ct1"
+          name: "Julia Martin"
+          email: "julia.martin@partnerfirm.com"
+          phone: "+49 160 9998877"
+          company: "Partner Firm GmbH"
+          role: "Business Development"
+        - id: "ct2"
+          name: "Thomas Berg"
+          email: "thomas.berg@ourcompany.com"
+          phone: "+49 160 5554433"
+          company: "Our Company"
+          role: "Senior Consultant"
+
+events:
+  - type: "user_message"
+    scheduled_time: 0
+    payload: "I received a meeting request from Julia Martin. Please check if the proposed time works, schedule it if possible, and reply to Julia confirming. If there's a conflict, let me know."
+
+verifier:
+  checks:
+    # Agent reads Julia's email to get the details
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        email_id: "em1"
+
+    # Agent checks for calendar conflicts at the proposed time
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "check_conflicts"
+
+    # Agent creates the calendar event
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "create_event"
+
+    # Agent replies to Julia's email
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "reply_to_email"
+
+    # The sequence: read email → check conflicts → create event → reply
+    - meta_type: "sequenceCheck"
+      trigger: 0
+      expected:
+        - "read_email"
+        - "check_conflicts"
+        - "create_event"
+        - "reply_to_email"

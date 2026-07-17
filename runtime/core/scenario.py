@@ -1,14 +1,9 @@
 import yaml
 from runtime.core.config import ScenarioConfig, SourceConfig, MetaType  # ton modèle Pydantic top-level
-from runtime.core.app import DocumentStore, Calendar
+from runtime.core.app_registry import APP_REGISTRY
 from runtime.core.event import EnvEvent, UserEvent, AgentEvent
 from runtime.core.utils import Status
 from runtime.core.verifier import Verifier, Check
-
-APP_REGISTRY = {
-    "document_store": DocumentStore,
-    "calendar": Calendar,
-}
 
 class Scenario:
     def __init__(self, path):

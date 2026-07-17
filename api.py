@@ -1,5 +1,9 @@
-from fastapi import FastAPI
+import os
+import time
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from runtime.core.scenario import Scenario
+from runtime.core.runner import Runner
 
 app = FastAPI()
 
@@ -31,4 +35,31 @@ def get_scenarios(suite_path):
 
 @app.get("/scenarios")
 def scenario_list():
-    return get_scenarios("SCENARIOS_DIR")
+    return get_scenarios(SCENARIOS_DIR)
+
+@app.post("/scenarios/{scenario_id}")
+def run_single_scenario(scenario_id):
+    """Run a single scenario and return results."""
+    from cli import return_json_summary
+
+    scenario_path = os.path.join(SCENARIOS_DIR, f"{scenario_id}.yaml")
+    if not os.path.exists(scenario_path):
+        raise HTTPException(status_code=404, detail="Scenario does not exist. Go to /scenarios to check the list of existing scenarios")
+    
+    scenario = Scenario(scenario_path)
+    runner = Runner(verifier=scenario.verifier)
+
+    start = time.time()
+    result = runner.run(scenario)
+    duration = time.time() - start
+    
+    return return_json_summary(scenario, scenario_id, result, duration)
+
+@app.post("/run-suite")
+def run_suite():
+    scenarios = get_scenarios(SCENARIOS_DIR)
+    results = []
+    for s in scenarios:
+        result = run_single_scenario(s["id"])
+        results.append(result)
+    return {"suite": SCENARIOS_DIR, "results": results}

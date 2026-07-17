@@ -205,6 +205,140 @@ code {
   width: 80px;
 }
 
+/* ─── Scenario list ──────────────────────────────── */
+
+.scenario-list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+  font-size: 14px;
+}
+
+.scenario-list tr {
+  
+  transition: background 0.12s;
+}
+
+.scenario-list tr:hover {
+  background: var(--surface-2);
+}
+
+.scenario-list tr.selected {
+  background: var(--accent-bg);
+  border-left: 2px solid var(--fill-accent);
+}
+
+.scenario-list td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.scenario-list td:first-child {
+  color: var(--text-muted);
+  width: 60px;
+  text-align: center;
+}
+
+.scenario-list td:last-child {
+  text-align: right;
+  color: var(--text-muted);
+  width: 80px;
+}
+
+/* button —————————————————————————————— */
+.run-suite {
+  background: var(--fill-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.run-suite:hover {
+  background: #1a6bd4;
+}
+
+.run-suite:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Progress bar ───────────────────────────────── */
+
+.progress-container {
+  margin: 16px 0;
+}
+
+.progress-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: var(--fill-accent);
+  transition: width 0.4s ease;
+}
+
+/* ─── Status badges ──────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.badge-pending {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.badge-running {
+  background: var(--accent-bg);
+  color: var(--text-accent);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.badge-done-pass {
+  background: var(--bg-success);
+  color: var(--text-success);
+}
+
+.badge-done-fail {
+  background: var(--bg-danger);
+  color: var(--text-danger);
+}
+
+.badge-error {
+  background: var(--bg-danger);
+  color: var(--text-danger);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* ─── Status badges ──────────────────────────────── */
 
 .status-pass {

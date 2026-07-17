@@ -1,0 +1,82 @@
+name: "client_onboarding"
+description: "Agent must onboard a new client by adding them to contacts, sending a welcome email, and scheduling a kickoff meeting"
+
+apps:
+  email:
+    initial_state:
+      inbox:
+        - id: "em1"
+          from: "boss@ourcompany.com"
+          subject: "New Client - Nakamura Industries"
+          body: "We just signed Nakamura Industries. Main contact is Kenji Nakamura, kenji@nakamura-ind.jp, phone +81 90 1234 5678. He's their VP of Operations. Please onboard them: add to contacts, send a welcome email introducing our services, and schedule a kickoff for October 18th 10:00-11:00."
+          date: "2024-10-14"
+
+  calendar:
+    initial_state:
+      events:
+        - id: "cal1"
+          title: "Internal Planning"
+          date: "2024-10-18"
+          start_time: "08:00"
+          end_time: "09:00"
+          attendees: ["Team"]
+          location: "Main Office"
+          description: ""
+
+  contacts:
+    initial_state:
+      contacts:
+        - id: "ct1"
+          name: "Alice Weber"
+          email: "alice@ourcompany.com"
+          company: "Our Company"
+          role: "Account Manager"
+
+events:
+  - type: "user_message"
+    scheduled_time: 0
+    payload: "Please process the new client onboarding from the email I received from my boss. Follow the instructions in the email."
+
+verifier:
+  checks:
+    # Agent reads the boss's email first
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        email_id: "em1"
+
+    # Agent adds the new contact
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "add_contact"
+
+    # Agent adds contact with correct name
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        name: "Kenji Nakamura"
+
+    # Agent sends a welcome email
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "send_email"
+
+    # Agent sends to the right address
+    - meta_type: "argCheck"
+      trigger: 0
+      expected:
+        to: "kenji@nakamura-ind.jp"
+
+    # Agent schedules the kickoff meeting
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "create_event"
+
+    # Correct sequence: read instructions → add contact → send email → schedule meeting
+    - meta_type: "sequenceCheck"
+      trigger: 0
+      expected:
+        - "read_email"
+        - "add_contact"
+        - "send_email"
+        - "create_event"

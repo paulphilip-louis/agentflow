@@ -1,0 +1,91 @@
+name: "meeting_preparation"
+description: "Agent must prepare for a client meeting by gathering context from emails, checking calendar availability, and looking up attendee contacts"
+
+apps:
+  email:
+    initial_state:
+      inbox:
+        - id: "em1"
+          from: "sarah.chen@acmecorp.com"
+          subject: "Q4 Review Meeting Agenda"
+          body: "Hi, here's the agenda for our Q4 review meeting: 1) Revenue analysis 2) Client retention metrics 3) 2025 roadmap. Please prepare the retention numbers. Looking forward to it."
+          date: "2024-10-10"
+        - id: "em2"
+          from: "marc.dupont@acmecorp.com"
+          subject: "Meeting Room Change"
+          body: "The Q4 review meeting has been moved from Room A to the Berlin Conference Room on the 3rd floor."
+          date: "2024-10-12"
+        - id: "em3"
+          from: "newsletter@techdigest.com"
+          subject: "Weekly Tech Digest"
+          body: "This week in tech: new AI regulations proposed by EU commission..."
+          date: "2024-10-11"
+
+  calendar:
+    initial_state:
+      events:
+        - id: "cal1"
+          title: "Q4 Review Meeting"
+          date: "2024-10-15"
+          start_time: "14:00"
+          end_time: "15:30"
+          attendees: ["Sarah Chen", "Marc Dupont", "Lisa Wang"]
+          location: "Room A"
+          description: "Quarterly business review with Acme Corp team"
+        - id: "cal2"
+          title: "Lunch with Yuki"
+          date: "2024-10-15"
+          start_time: "12:00"
+          end_time: "13:00"
+          attendees: ["Yuki Tanaka"]
+          location: "Café Central"
+          description: ""
+
+  contacts:
+    initial_state:
+      contacts:
+        - id: "ct1"
+          name: "Sarah Chen"
+          email: "sarah.chen@acmecorp.com"
+          phone: "+49 170 1234567"
+          company: "Acme Corp"
+          role: "Head of Strategy"
+        - id: "ct2"
+          name: "Marc Dupont"
+          email: "marc.dupont@acmecorp.com"
+          phone: "+49 170 7654321"
+          company: "Acme Corp"
+          role: "Office Manager"
+        - id: "ct3"
+          name: "Lisa Wang"
+          email: "lisa.wang@acmecorp.com"
+          phone: "+49 170 1112233"
+          company: "Acme Corp"
+          role: "CFO"
+
+events:
+  - type: "user_message"
+    scheduled_time: 0
+    payload: "I have a Q4 Review Meeting coming up on October 15th. Can you tell me what I need to prepare, where the meeting actually is (I heard the room changed), and the role of each attendee?"
+
+verifier:
+  checks:
+    # Agent must search emails about the meeting
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "search_emails"
+
+    # Agent must read the room change email
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "read_email"
+
+    # Agent must check the calendar event
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "get_event"
+
+    # Agent must look up attendee contacts
+    - meta_type: "toolCheck"
+      trigger: 0
+      expected: "get_contact"

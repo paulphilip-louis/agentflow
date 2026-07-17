@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import (BaseMessage, HumanMessage, AIMessage, SystemMessage)
 from langchain.agents import create_agent
 from langchain_core.callbacks import BaseCallbackHandler
-from runtime.core.app import Calendar, DocumentStore
+from runtime.core.app_registry import APP_REGISTRY
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ SYSTEM_PROMPT = """You are an assistant that processes documents.
                 All document names are self-explanatory.
                 Always start by listing them to identify the exact names to retrieve
                 Always retrieve all necessary documents before performing any action.
-                NB: Emails are stored as documents.
+                NB: To prepare a meeting, you first have to check your mails.
                 """
 
 def create_env_agent(env):

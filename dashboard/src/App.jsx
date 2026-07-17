@@ -38,6 +38,62 @@ function rateByCheckType({scenarios, type}) {
 
 // ––– Components –––––––––––––––––––––––––––––––––––––
  
+function ListScenarios( { available, runStatus, results } ) {
+  return (
+  <div className="frame">
+  <table className="scenario-list">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Number of checks</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {available.map((x) => (
+        <tr key={x.id}>
+          <td>{x.name}</td>
+          <td>{x.description}</td>
+          <td>{x.checks}</td>
+          <td><StatusBadge scenarioId={x.id} runStatus={runStatus} results={results} /></td>
+        </tr>
+      ))}
+      
+    </tbody>
+  </table>
+  </div>);
+}
+
+function ProgressBar({ current, total }) {
+  if (total === 0) return null;
+  const pct = Math.round((current / total) * 100);
+  return (
+    <div className="progress-container">
+      <div className="progress-label">
+        <span>Running scenarios...</span>
+        <span>{current}/{total} ({pct}%)</span>
+      </div>
+      <div className="progress-track">
+        <div className="progress-fill" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function StatusBadge({ scenarioId, runStatus, results }) {
+  const status = runStatus[scenarioId];
+  if (!status) return null;
+  if (status === "pending") return <span className="badge badge-pending">Pending</span>;
+  if (status === "running") return <span className="badge badge-running">Running</span>;
+  if (status === "error") return <span className="badge badge-error">Error</span>;
+  // done — check pass/fail
+  const result = results[scenarioId];
+  if (result?.passed) return <span className="badge badge-done-pass">✅ Pass</span>;
+  return <span className="badge badge-done-fail">❌ Fail</span>;
+}
+
+
 function SummaryTable({ scenarios, selectedId, onSelect }) {
   return (
     <table className="summary-table">
@@ -167,28 +223,67 @@ function CheckDetail({check}) {
 
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
+  
+  const [loading, setLoading] = useState(false);
+  const [available, setAvailable] = useState([]);
+
+  const [results, setResults] = useState(null);           // scenario_id → result
+  const [runStatus, setRunStatus] = useState({});       // scenario_id → "pending" | "running" | "done"
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
+
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [selectedCheck, setSelectedCheck] = useState(null);
 
-
   useEffect(() => {
-    fetch("/results.json")
-      .then(res => {
-        console.log("Status:", res.status);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then(json => {
-        console.log("Loaded:", json);
-        setData(json);
-      })
-      .catch(err => console.error("Fetch failed:", err));
+    fetch("http://localhost:8000/scenarios")
+      .then(res => {return res.json()})
+      .then(json => {setAvailable(json)})
   }, []);
 
-  if (!data) return <p>Loading...</p>;
+  console.log(available.length)
+  if (!results || loading) {
+    return (
+      <div className="dashboard">
+        <h1>Agentflow</h1>
+        <ListScenarios available={available} runStatus={runStatus} results={results} />
+        {loading && <ProgressBar current={progress.current} total={progress.total} />}
+        <button className="run-suite" onClick={runSuite} disabled={loading}>
+          {loading ? "Running..." : "Run Suite"}
+        </button>
+      </div>
+    );
+  }
+
+  async function runSuite() {
+    setLoading(true);
+    const total = available.length;
+    setProgress({ current: 0, total });
+
+    // Initialize all to pending
+    const initialStatus = {};
+    for (const s of available) initialStatus[s.id] = "pending";
+    setRunStatus(initialStatus);
+    setResults([]);
+    
+    for (let i = 0; i < available.length; i++) {
+      const s = available[i];
+      setRunStatus(prev => ({ ...prev, [s.id]: "running" }));
+
+      try {
+        const res = await fetch(`http://localhost:8000/scenarios/${s.id}`, { method: "POST" });
+        const json = await res.json();
+        setResults(prev => ([ ...prev, json ]));
+        setRunStatus(prev => ({ ...prev, [s.id]: "done" }));
+      } catch (err) {
+        setRunStatus(prev => ({ ...prev, [s.id]: "error" }));
+      }
+
+      setProgress({ current: i + 1, total });
+    }
+    setLoading(false);
+  }
   
-  const scenarios = data.results;
+  const scenarios = results;
   console.log(scenarios)
   
   const currentScenario = scenarios.find((x) => x.id === selectedScenario) || scenarios[0];
@@ -232,6 +327,10 @@ export default function Dashboard() {
           </div>
           
       </div>
+
+      <button className="run-suite" onClick={runSuite} disabled={loading}>
+          {loading ? "Running..." : "Run Suite"}
+        </button>
     </div>
   );
 }
